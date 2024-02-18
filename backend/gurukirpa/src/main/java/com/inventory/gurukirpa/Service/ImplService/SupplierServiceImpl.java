@@ -1,10 +1,13 @@
 package com.inventory.gurukirpa.Service.ImplService;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.inventory.gurukirpa.Dto.SupplierDto;
 import com.inventory.gurukirpa.Entity.Supplier;
+import com.inventory.gurukirpa.Exception.SupplierAlreadyExistsException;
 import com.inventory.gurukirpa.Repository.SupplierRepository;
 import com.inventory.gurukirpa.Service.SupplierService;
 
@@ -15,19 +18,20 @@ public class SupplierServiceImpl implements SupplierService {
     private SupplierRepository repo;
 
     @Override
-    public Supplier createSupplier(SupplierDto data) {
-        try {
-            Supplier s = new Supplier();
-            s.setName(data.getName());
-            s.setPhoneNumber(data.getPhone());
-            s.setGst(data.getGst());
-            s.setAddress(data.getAddress());
-            s.setEmail(data.getEmail());
-            return null; // return has to do something..
-        } catch (Exception e) {
-            // TODO: handle exception
-            throw new UnsupportedOperationException("Unimplemented method 'createSupplier'");
-        }
+    public Supplier createSupplier(SupplierDto data) throws SupplierAlreadyExistsException {
+    	Optional<Supplier> resp = this.repo.findByEmail(data.getEmail());
+    	if(resp.isPresent()) {
+    		throw new SupplierAlreadyExistsException("Supplier Already Exists!!");
+    	}else {
+    		Supplier s = new Supplier();
+    		s.setName(data.getName());
+    		s.setEmail(data.getEmail());
+    		s.setGst(data.getGst());
+    		s.setPhoneNumber(data.getPhone());
+    		s.setAddress(data.getAddress());
+    		return this.repo.save(s);
+    	}
+        
     }
 
 }

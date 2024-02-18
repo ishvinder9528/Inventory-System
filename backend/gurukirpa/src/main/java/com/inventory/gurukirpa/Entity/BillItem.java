@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BillItem {
     @Id
     private int billItemId;
+    private String billItemName;
     private int qty;
     private float price;
     private Bill bill;
@@ -20,7 +21,15 @@ public class BillItem {
         this.billItemId = billItemId;
     }
 
-    public int getQty() {
+    public String getBillItemName() {
+		return billItemName;
+	}
+
+	public void setBillItemName(String billItemName) {
+		this.billItemName = billItemName;
+	}
+
+	public int getQty() {
         return qty;
     }
 
